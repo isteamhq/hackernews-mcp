@@ -51,6 +51,19 @@ No API keys required — uses the public Hacker News API and Algolia HN Search.
 | `get_user` | Get a user's profile (karma, about, member since) |
 | `get_comments` | Get threaded comments on a story (depth-limited) |
 
+## Rate Limits & Agent Safety
+
+Both APIs used by this server are public and have generous limits:
+
+| API | Limit | Notes |
+|-----|-------|-------|
+| HN Firebase API | ~500 req/sec per IP | No auth required, very lenient |
+| Algolia HN Search | ~1,000 req/min per IP | Returns `X-RateLimit-*` headers |
+
+**This server is read-only** — there are no write operations, so idempotency and duplicate posting are not a concern.
+
+**Backoff:** If you hit Algolia's rate limit, it returns `429` with `X-RateLimit-Reset` header. Add a brief delay before retrying.
+
 ## Usage Examples
 
 **Track tech trends:**
